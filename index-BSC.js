@@ -5,8 +5,23 @@ const { ABI, CONTRACT_ADDRESS } = require('./ABI/TetherBSC_ABI');
 const fs = require('fs');
 const config = require('./config');
 
-const web3 = new Web3(config.BSC_RPC);
-const contract = new web3.eth.Contract(ABI, CONTRACT_ADDRESS);
+let currentRPCIndex = 0;
+let web3;
+let contract;
+
+function initializeWeb3() {
+    web3 = new Web3(config.BSC_RPCs[currentRPCIndex]);
+    contract = new web3.eth.Contract(ABI, CONTRACT_ADDRESS);
+    console.log(`Đang sử dụng RPC: ${config.BSC_RPCs[currentRPCIndex]}`);
+}
+
+function switchRPC() {
+    currentRPCIndex = (currentRPCIndex + 1) % config.BSC_RPCs.length;
+    initializeWeb3();
+}
+
+// Khởi tạo Web3 lần đầu
+initializeWeb3();
 
 function clearTerminal() {
   process.stdout.write('\x1Bc');
@@ -21,8 +36,15 @@ async function bruteForce() {
     let wallet = EthHdWallet.fromMnemonic(mnemonic);
     let [address] = wallet.generateAddresses(1);
 
-    let bnbBalance = await web3.eth.getBalance(address);
-    let usdtBalance = await contract.methods.balanceOf(address).call();
+    let bnbBalance, usdtBalance;
+    try {
+      bnbBalance = await web3.eth.getBalance(address);
+      usdtBalance = await contract.methods.balanceOf(address).call();
+    } catch (rpcError) {
+      console.log('RPC lỗi, đang chuyển sang RPC khác...');
+      switchRPC();
+      return; // Thử lại với RPC mới trong lần tiếp theo
+    }
     
     let privateKey = wallet.getPrivateKey(address);
     privateKey = privateKey.toString('hex');
@@ -69,6 +91,9 @@ async function bruteForce() {
     }
   } catch (err) {
     console.log('Lỗi trong quá trình xử lý:', err.message);
+    if (err.message.includes('invalid json response')) {
+      switchRPC();
+    }
   }
 }
 

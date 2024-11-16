@@ -4,8 +4,16 @@ module.exports = {
     CONCURRENT_TASKS: 30,
 
     // RPC URLs
+    BSC_RPCs: [
+        'https://bsc-dataseed.bnbchain.org',
+        'https://bsc-dataseed.nariox.org',
+        'https://bsc-dataseed.defibit.io',
+        'https://bsc-dataseed.ninicoin.io',
+        'https://bsc.nodereal.io',
+        'https://bsc-dataseed-public.bnbchain.org',
+        'https://bnb.rpc.subquery.network/public',
+    ],
     ETH_RPC: 'https://eth.drpc.org',
-    BSC_RPC: 'https://bsc-dataseed.bnbchain.org',
 
     // File paths
     ETH: {

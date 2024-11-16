@@ -1,19 +1,18 @@
-# BSC & ETH Wallet Bruteforce
+# 🚀 ETH & BSC Wallet Bruteforce
 
-Công cụ bruteforce ví BSC và ETH được tạo bởi NghiaOMG.
+Công cụ bruteforce ví ETH và BSC được tạo bởi NghiaOMG.
 
-## 🚀 Tính năng
+## 📋 Tính năng
 
 - Tự động tạo ví ngẫu nhiên
 - Kiểm tra số dư:
   - ETH và USDT trên mạng Ethereum
   - BNB và USDT trên mạng BSC
 - Chạy đa luồng để tối ưu tốc độ
-- Tự động chuyển đổi RPC khi bị giới hạn
 - Tự động lưu kết quả khi tìm thấy ví có số dư
 - Hệ thống backup để đảm bảo không mất dữ liệu
 
-## 📋 Yêu cầu
+## 💻 Yêu cầu hệ thống
 
 - Node.js (khuyến nghị v16+)
 - NPM hoặc Yarn
@@ -28,9 +27,7 @@ cd <project-folder>
 
 2. Cài đặt dependencies:
 ```bash
-npm install web3
-npm install bip39
-npm install eth-hd-wallet
+npm install web3 bip39 eth-hd-wallet
 ```
 
 3. Chạy chương trình:
@@ -58,10 +55,17 @@ module.exports = {
     CONCURRENT_TASKS: 30,
 
     // RPC URLs
+    BSC_RPCs: [
+        'https://bsc-dataseed1.binance.org',
+        'https://bsc-dataseed2.binance.org',
+        'https://bsc-dataseed3.binance.org',
+        'https://bsc-dataseed4.binance.org',
+        'https://bsc.nodereal.io',
+        'https://rpc.ankr.com/bsc'
+    ],
     ETH_RPC: 'https://eth.drpc.org',
-    BSC_RPC: 'https://bsc-dataseed.bnbchain.org',
 
-    // Đường dẫn file kết quả
+    // File paths
     ETH: {
         MAIN_FILE: 'found_wallets.txt',
         BACKUP_FILE: 'found_wallets_backup.txt'
@@ -73,23 +77,22 @@ module.exports = {
 };
 ```
 
-Bạn có thể dễ dàng điều chỉnh các thông số trong file này để thay đổi:
-- Số luồng xử lý
-- Số tác vụ chạy đồng thời
-- URL của RPC endpoints
-- Tên file lưu kết quả
+## 📁 Cấu trúc thư mục
 
-## 📝 Kết quả
+```
+├── index-ERC.js         # Script bruteforce ETH
+├── index-BSC.js         # Script bruteforce BSC
+├── config.js            # File cấu hình
+├── ABI/
+│   ├── TetherERC_ABI.js # ABI cho USDT trên ETH
+│   └── TetherBSC_ABI.js # ABI cho USDT trên BSC
+├── found_wallets.txt    # Kết quả tìm được trên ETH
+└── found_wallets_bsc.txt # Kết quả tìm được trên BSC
+```
 
-### Ethereum Network
-- File chính: `found_wallets.txt`
-- File backup: `found_wallets_backup.txt`
+## 📝 Format kết quả
 
-### BSC Network
-- File chính: `found_wallets_bsc.txt`
-- File backup: `found_wallets_bsc_backup.txt`
-
-Format kết quả:
+Kết quả được lưu với format:
 ```
 Địa chỉ ví: 0x...
 Private Key: ...
@@ -97,18 +100,6 @@ Số dư ETH/BNB: ...
 Số dư USDT: ...
 Cụm từ gợi nhớ: ...
 ```
-
-## 🔄 RPC Endpoints
-
-### Ethereum
-- https://eth.drpc.org
-
-### BSC
-- https://bsc-dataseed.bnbchain.org
-- https://bsc-dataseed.nariox.org
-- https://bsc-dataseed.defibit.io
-- https://bsc-dataseed.ninicoin.io
-- https://bsc.nodereal.io
 
 ## ⚠️ Lưu ý
 
@@ -123,3 +114,7 @@ Created by NghiaOMG
 ## 📄 License
 
 MIT License
+
+## 🤝 Đóng góp
+
+Mọi đóng góp và phản hồi đều được chào đón. Vui lòng tạo issue hoặc pull request.
