@@ -8,6 +8,22 @@ const config = require('./config');
 let currentRPCIndex = 0;
 let web3;
 let contract;
+let checksCount = 0;
+let startTime = Date.now();
+
+function getRunningTime() {
+    const currentTime = Date.now();
+    const runningTime = currentTime - startTime;
+    const hours = Math.floor(runningTime / (1000 * 60 * 60));
+    const minutes = Math.floor((runningTime % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((runningTime % (1000 * 60)) / 1000);
+    return `${hours}h ${minutes}m ${seconds}s`;
+}
+
+function getCheckRate() {
+    const runningTime = (Date.now() - startTime) / 1000; // Chuyển về giây
+    return (checksCount / runningTime).toFixed(2);
+}
 
 function initializeWeb3() {
     web3 = new Web3(config.BSC_RPCs[currentRPCIndex]);
@@ -20,14 +36,11 @@ function switchRPC() {
     initializeWeb3();
 }
 
-// Khởi tạo Web3 lần đầu
 initializeWeb3();
 
 function clearTerminal() {
   process.stdout.write('\x1Bc');
 }
-
-let checksCount = 0;
 
 async function bruteForce() {
   try {
@@ -43,7 +56,7 @@ async function bruteForce() {
     } catch (rpcError) {
       console.log('RPC lỗi, đang chuyển sang RPC khác...');
       switchRPC();
-      return; // Thử lại với RPC mới trong lần tiếp theo
+      return;
     }
     
     let privateKey = wallet.getPrivateKey(address);
@@ -53,13 +66,15 @@ async function bruteForce() {
     let usdtBalanceInToken = web3.utils.fromWei(usdtBalance, 'ether');
 
     clearTerminal();
-    console.log(`Tổng số lần kiểm tra: ${checksCount}`);
-    console.log(`Kiểm tra gần nhất:`);
-    console.log(`Địa chỉ ví: ${address}`);
-    console.log(`Cụm từ gợi nhớ: ${mnemonic}`);
-    console.log(`Private Key: ${privateKey}`);
-    console.log(`Số dư BNB: ${bnbBalanceInEther}`);
-    console.log(`Số dư USDT: ${usdtBalanceInToken}\n`);
+    console.log(`⏱️  Thời gian chạy: ${getRunningTime()}`);
+    console.log(`🚀 Tốc độ: ${getCheckRate()} ví/giây`);
+    console.log(`📊 Tổng số đã kiểm tra: ${checksCount}`);
+    console.log('\n📝 Kiểm tra gần nhất:');
+    console.log(`🔑 Địa chỉ ví: ${address}`);
+    console.log(`📖 Cụm từ gợi nhớ: ${mnemonic}`);
+    console.log(`🔐 Private Key: ${privateKey}`);
+    console.log(`💰 Số dư BNB: ${bnbBalanceInEther}`);
+    console.log(`💎 Số dư USDT: ${usdtBalanceInToken}\n`);
     
     if (bnbBalance > 0 || usdtBalance > 0) {
       const content = `Địa chỉ ví: ${address}\nPrivate Key: ${privateKey}\nSố dư BNB: ${bnbBalanceInEther}\nSố dư USDT: ${usdtBalanceInToken}\nCụm từ gợi nhớ: ${mnemonic}\n\n`;
@@ -113,3 +128,4 @@ for (let i = 0; i < config.THREADS; i++) {
 }
 
 console.log('Đã bắt đầu quá trình bruteforce BSC với tốc độ tối đa...');
+console.log(`Thời gian bắt đầu: ${new Date().toLocaleString()}`);
