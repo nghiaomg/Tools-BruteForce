@@ -1,0 +1,19 @@
+{
+  "name": "brute-force",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "author": "NghiaOMG",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "bip39": "^3.1.0",
+    "brute-force": "file:",
+    "eth-hd-wallet": "^0.5.1",
+    "exec-sh": "^0.4.0",
+    "fs": "^0.0.1-security",
+    "web3": "^4.0.0"
+  }
+}
